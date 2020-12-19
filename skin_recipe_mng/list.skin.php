@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
-include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
+include_once(G5_PLUGIN_PATH . '/jquery-ui/datepicker.php');
 // 선택옵션으로 인해 셀합치기가 가변적으로 변함
 $colspan = 7;
 
@@ -16,7 +16,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 //DB connection
 $user = 'db_master';
 $password = 'qwertyuiop';
-$dbName = 'virtual_db_haeseon_20201120';
+$dbName = 'bizcos';
 $host = 'bizcos.czjzq6s5u780.ap-northeast-2.rds.amazonaws.com';
 $con = mysqli_connect($host, $user, $password, $dbName);
 mysqli_query($con, "set session character_set_connection=utf8;");
@@ -36,7 +36,6 @@ $search = $_GET['search'];
 ?>
 
 <style>
-	
 	.tbl_head01 thead th {
 		background: #dae1e4;
 		text-align: center;
@@ -47,10 +46,10 @@ $search = $_GET['search'];
 		text-align: center;
 	}
 
-	.search_form{
-		display : inline-block;
+	.search_form {
+		display: inline-block;
 	}
-	
+
 	/* 2020.11.13 해선 */
 	#product_name {
 		font-size: 15px;
@@ -68,25 +67,22 @@ $search = $_GET['search'];
 
 	#add_form {
 		border: 2px solid grey;
-		padding : 5px;
-		margin : 10px;
-		text-align : center;
-		padding-bottom : 30px;
+		padding: 5px;
+		margin: 10px;
+		text-align: center;
+		padding-bottom: 30px;
 	}
 
-	.add_form_input{
-		padding : 10px;
-		margin : 10px;
-	}
-
-	.btn_add{
-		
-	}
-
-	h1{
+	.add_form_input {
+		padding: 10px;
 		margin: 10px;
 	}
 
+	.btn_add {}
+
+	h1 {
+		margin: 10px;
+	}
 </style>
 
 <script>
@@ -100,23 +96,27 @@ $search = $_GET['search'];
 		openWin;
 	}
 
-	function deleteProduct(id){
+	function deleteProduct(id) {
 		window.location.search = window.location.search + `&delete=${id}`
 	}
 
-	function hideElementById(id){
+	function hideElementById(id) {
 		document.getElementById(id).style.display = "none"
 	}
 
-	function displayElementById(id){
+	function displayElementById(id) {
 		console.log(id)
 		document.getElementById(id).style.display = "block"
+	}
+
+	function alert_massage() {
+		alert("해당 상품 검색 후 수정 버튼을 이용하세요.")
 	}
 </script>
 
 <!-- read init Table -->
 <?php
-$sql_search = "SELECT product_name_ko,product_type,product_unit,create_time FROM vr_product WHERE product_name_ko LIKE '%{$search}%' ORDER BY create_time DESC ";
+$sql_search = "SELECT product_sub_ko,product_type,product_unit,product_reg_date FROM product WHERE product_sub_ko LIKE '%{$search}%' ORDER BY product_reg_date DESC ";
 $result_page = mysqli_query($con, $sql_search);
 $total_count = mysqli_num_rows($result_page);
 ?>
@@ -144,38 +144,50 @@ $total_count = mysqli_num_rows($result_page);
 			<button class="btn_b03">조회</button>
 		</span>
 	</form>
-	<button id="btn-create-product" class="btn_b03" onclick="displayElementById('add_form')">신규등록</button>
+	<!-- <button id="btn-create-product" class="btn_b03" onclick="displayElementById('add_form')">신규등록</button> -->
+	<button id="btn-create-product" class="btn_b03" onclick="alert_massage()">신규등록</button>
 
 	<?php
 	$search = $_GET['search'];
 	Console_log($search)
 	?>
 
-	<form id="add_form" method="post">
+	<form id="add_form" method="post" action="">
 		<h1>제품 신규 등록</h1>
-		<span class ="add_form_input"> 
-			<label for="product_code" >제품코드</label>
-			<input id="product_code" type="text" name="product_code"/>
-			<label for="product_name" >제품명</label>
-			<input id="product_name" type="text" name="product_name"/>
-			<label for="product_type" >제품유형</label>
-			<input id="product_type" type="text" name="product_type"/>
-			<label for="product_unit" >단위</label>
-			<input id="product_unit" type="text" name="product_unit"/>
+		<span class="add_form_input">
+			<label for="product_code">제품코드</label>
+			<input id="product_code" type="text" name="product_code" />
+			<label for="product_sub_ko">제품명</label>
+			<input id="product_sub_ko" type="text" name="product_sub_ko" />
+			<label for="product_type">제품유형</label>
+			<input id="product_type" type="text" name="product_type" />
+			<label for="product_unit">단위</label>
+			<input id="product_unit" type="text" name="product_unit" />
+			<input type="text" name="test">
+			<input type="submit" name="submit" class="btn_b03" value="등록">
 		</span>
-		<input type="submit" class="btn_b03" value="등록"> 
 	</form>
 	<?php
-	$product_code = $_POST["product_code"];
-	$product_name = $_POST["product_name"];
-	$product_type = $_POST["product_type"];
-	$product_unit = $_POST["product_unit"];
 
-	if($product_code && $product_name && $product_type && $product_unit){
-		create_new_product($con,$product_code,$product_name, $product_type, $product_unit);
-		$product_code=null;
+	$product_code = $_POST["product_code"];
+	$product_sub_ko = $_POST["product_sub_ko"];
+	$product_type = $_POST["product_type"];
+	// $product_unit = $_POST["product_unitasdf"];
+	Console_log(count($_POST));
+	Console_log($_POST["test"]);
+	Console_log('hi');
+	Console_log($_POST["product_code"]);
+	Console_log($product_sub_ko);
+	Console_log($product_type);
+	Console_log($product_unit);
+	Console_log('end');
+	if ($product_code && $product_sub_ko && $product_type && $product_unit) {
+		create_new_product($con, $product_code, $product_sub_ko, $product_type, $product_unit);
+		$product_code = null;
+	} else {
+		Console_log("nononono");
 	}
-	
+
 	hide_element_by_id("add_form");
 	?>
 
@@ -225,7 +237,7 @@ $total_count = mysqli_num_rows($result_page);
 						$total_pages = ceil($total_pages / $page_count);
 						$pages_start = ($page - 1) * $list_count;
 
-						$sql_search = "SELECT product_code,product_name_ko,product_type,product_unit,create_time FROM vr_product WHERE product_name_ko LIKE '%{$search}%' ORDER BY create_time DESC LIMIT $pages_start, $list_count";
+						$sql_search = "SELECT product_code,product_sub_ko,product_type,product_unit,product_reg_date FROM product WHERE product_sub_ko LIKE '%{$search}%' ORDER BY product_reg_date DESC LIMIT $pages_start, $list_count";
 
 						// $sql_total="SELECT wr_subject, wr_type, wr_unit, wr_datetime FROM g5_write_product ORDER BY wr_datetime DESC LIMIT $pages_start, $list_count";
 						$result_page = mysqli_query($con, $sql_search);
@@ -233,27 +245,28 @@ $total_count = mysqli_num_rows($result_page);
 						while ($row = mysqli_fetch_array($result_page)) {
 							$filtered = array(
 								'product_code' => htmlspecialchars($row['product_code']),
-								'product_name_ko' => htmlspecialchars($row['product_name_ko']),
+								'product_sub_ko' => htmlspecialchars($row['product_sub_ko']),
 								'product_type' => htmlspecialchars($row['product_type']),
 								'product_unit' => htmlspecialchars($row['product_unit']),
-								'create_time' => htmlspecialchars($row['create_time']),
+								'product_reg_date' => htmlspecialchars($row['product_reg_date']),
 							);
-							
+
 						?>
 					<tr>
-						<td><?= $filtered['product_name_ko'] ?></td>
+						<td><?= $filtered['product_sub_ko'] ?></td>
 						<td><?= $filtered['product_type'] ?></td>
 						<td><?= $filtered['product_unit'] ?></td>
-						<td><?= $filtered['create_time'] ?></td>
-						<td><input type="button" class="btn_b03" onclick="deleteProduct(`<?= $row['product_code'] ?>`)" value="삭제"> 
+						<td><?= $filtered['product_reg_date'] ?></td>
+						<td><input type="button" class="btn_b03" onclick="deleteProduct(`<?= $row['product_code'] ?>`)" value="삭제">
 							<input type="button" class="btn_b03" onclick="open_popup(`<?= $row['product_code'] ?>`)" value="수정">
 						</td>
 					</tr>
 				<?php
-				$delete_id = $_GET['delete'];
-				if($delete_id){
-					delete_product($con, $delete_id);
-				}
+							$delete_id = $_GET['delete'];
+							if ($delete_id) {
+								Console_log("delete id is ", $delete_id);
+								delete_product($con, $delete_id);
+							}
 						}
 				?>
 
@@ -299,11 +312,13 @@ $total_count = mysqli_num_rows($result_page);
 
 <?php
 
-function hide_element_by_id($id){
+function hide_element_by_id($id)
+{
 	echo "<script>hideElementById('$id')</script>";
 }
 
-function display_element_by_id($id){
+function display_element_by_id($id)
+{
 	echo "<script>displayElementById('$id')</script>";
 }
 
@@ -317,44 +332,46 @@ function Console_log($data)
 	echo "<script>console.log(`$data`);</script>";
 }
 
-function delete_product($con, $code){
-	$query = "DELETE from vr_product where product_code = '$code'";
+function delete_product($con, $code)
+{
+	$query = "DELETE from product where product_code = '$code'";
 	Console_log("query : $query");
 
 	$result_delete = mysqli_query($con, $query);
-	if($result_insert==false){
+	if ($result_delete == false) {
 		echo "상품 삭제 실패. 관리자에게 문의하세요.";
 		error_log(mysqli_error($con));
-	}else{
+	} else {
 		echo "상품 삭제 완료.";
 	}
 	header("Location: //sfac1234.dothome.co.kr/bbs/board.php?bo_table=recipe_mng");
 	exit;
 }
 
-function create_new_product($con,$code,$name, $type, $unit){
+function create_new_product($con, $code, $name, $type, $unit)
+{
 	Console_log($code);
-	$filtered=array(
-	'product_code'=>mysqli_real_escape_string($con,$code),
-	'product_name_ko'=>mysqli_real_escape_string($con,$name),
-	'product_type'=>mysqli_real_escape_string($con,$type),
-	'product_unit'=>mysqli_real_escape_string($con,$unit)
+	$filtered = array(
+		'product_code' => mysqli_real_escape_string($con, $code),
+		'product_sub_ko' => mysqli_real_escape_string($con, $name),
+		'product_type' => mysqli_real_escape_string($con, $type),
+		'product_unit' => mysqli_real_escape_string($con, $unit)
 	);
 	$tmp = mysqli_real_escape_string($con, $code);
-	$sql_insert = "INSERT INTO vr_product(product_code,product_name_ko, product_type,product_unit,create_time)  
-					SELECT * FROM (SELECT '{$filtered['product_code']}','{$filtered['product_name_ko']}','{$filtered['product_type']}','{$filtered['product_unit']}',NOW()) as t
+	$sql_insert = "INSERT INTO product(product_code,product_sub_ko, product_type,product_unit,product_reg_date)  
+					SELECT * FROM (SELECT '{$filtered['product_code']}','{$filtered['product_sub_ko']}','{$filtered['product_type']}','{$filtered['product_unit']}',NOW()) as t
 	 					WHERE NOT EXISTS (
-		 					SELECT product_code FROM vr_product WHERE product_code = '{$filtered['product_code']}'
+		 					SELECT product_code FROM product WHERE product_code = '{$filtered['product_code']}'
 							)";
 
-							//상품코드 겹칠 때 에러메세지
+	//상품코드 겹칠 때 에러메세지
 
 	Console_log($sql_insert);
 	$result_insert = mysqli_query($con, $sql_insert);
-	if($result_insert==false){
+	if ($result_insert == false) {
 		echo "상품 저장 실패. 관리자에게 문의하세요.";
 		error_log(mysqli_error($con));
-	}else{
+	} else {
 		echo "상품 저장 완료.";
 	}
 	header("Location: //sfac1234.dothome.co.kr/bbs/board.php?bo_table=recipe_mng");
